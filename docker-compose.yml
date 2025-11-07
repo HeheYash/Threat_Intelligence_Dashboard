@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: cti-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: cti_admin
+      MONGO_INITDB_ROOT_PASSWORD: cti_secure_password
+      MONGO_INITDB_DATABASE: ctidb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - cti-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      timeout: 20s
+      retries: 5
+      interval: 30s
+
+  # Flask Backend Application
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: cti-backend
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - MONGODB_URI=mongodb://cti_admin:cti_secure_password@mongodb:27017/ctidb?authSource=admin
+      - SECRET_KEY=your-super-secret-key-change-in-production
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY:-}
+      - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY:-}
+      - LOG_LEVEL=INFO
+      - FETCH_INTERVAL_MINUTES=30
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cti-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      timeout: 10s
+      retries: 3
+      interval: 30s
+
+  # Nginx Frontend Server
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: cti-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - cti-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      timeout: 10s
+      retries: 3
+      interval: 30s
+
+  # Data Fetcher Scheduler
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.scheduler
+    container_name: cti-scheduler
+    restart: unless-stopped
+    environment:
+      - MONGODB_URI=mongodb://cti_admin:cti_secure_password@mongodb:27017/ctidb?authSource=admin
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY:-}
+      - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY:-}
+      - LOG_LEVEL=INFO
+      - FETCH_INTERVAL_MINUTES=30
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cti-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  cti-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

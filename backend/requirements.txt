@@ -1,0 +1,11 @@
+flask==2.3.3
+flask-cors==4.0.0
+pymongo==4.5.0
+requests==2.31.0
+python-dotenv==1.0.0
+APScheduler==3.10.4
+gunicorn==21.2.0
+python-dateutil==2.8.2
+ipaddress==1.0.23
+validators==0.22.0
+hashlib-compat==1.0.1

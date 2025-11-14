@@ -1,4 +1,4 @@
-# Threat_Intelligence_Dashboard
+# Threat Intelligence Dashboard
 
 A comprehensive web dashboard that aggregates threat intelligence feeds from multiple sources, stores indicators of compromise (IOCs), visualizes threat trends, and provides advanced lookup capabilities with export functionality.
 

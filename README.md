@@ -377,7 +377,14 @@ Cyber_Threat_Intelligence_Dashboard/
 3. **Update scheduler** in `fetchers/`
 4. **Add to documentation**
 
-## 🙏 Acknowledgments
+##  Results
+### 📌 Dashboard (Overview)
+![Dashboard](dashboard.png)
+
+###🔍 IOC Lookup Page
+![Lookup Page](lookup.png)
+
+##  Acknowledgments
 
 - **VirusTotal** - Malware detection and analysis
 - **AbuseIPDB** - IP abuse reporting

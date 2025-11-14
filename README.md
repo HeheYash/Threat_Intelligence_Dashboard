@@ -391,18 +391,6 @@ Cyber_Threat_Intelligence_Dashboard/
 - [Configuration Guide](docs/CONFIGURATION.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
-## 🤝 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting guide
-- Review API documentation
-- Join our community discussions
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - **VirusTotal** - Malware detection and analysis

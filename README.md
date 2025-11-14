@@ -377,20 +377,6 @@ Cyber_Threat_Intelligence_Dashboard/
 3. **Update scheduler** in `fetchers/`
 4. **Add to documentation**
 
-### Contributing
-1. Fork the repository
-2. Create feature branch
-3. Add tests for new functionality
-4. Update documentation
-5. Submit pull request
-
-## 📚 Additional Documentation
-
-- [API Reference](docs/API_DOCUMENTATION.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
-- [Configuration Guide](docs/CONFIGURATION.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-
 ## 🙏 Acknowledgments
 
 - **VirusTotal** - Malware detection and analysis
